@@ -278,9 +278,11 @@ def average_pv_production(pv_df):
 def resolve_window_bounds(window):
     if isinstance(window, dict):
         start = window["start_slot"] * 15
-        end = window["end_slot"] * 15
+        end = min((window["end_slot"] + 1) * 15, 24 * 60)
         return start, end
-    return window
+    start, end = window
+    end = min(end + 15, 24 * 60)
+    return int(start), int(end)
 
 
 def run_capacity_sweep(
@@ -621,14 +623,18 @@ def plot_results(
         window_df = pd.DataFrame(window_entries)
         window_df["duration"] = (window_df["end"] - window_df["start"]) / 60.0
         window_df["start_hr"] = window_df["start"] / 60.0
-        window_df = window_df.sort_values(["month", "type"])
-        y = range(len(window_df))
+        window_df = window_df.sort_values(["month", "type"]).reset_index(drop=True)
+        positions = window_df.index.tolist()
         type_colors = {t: color for t, _, _, color in type_info}
         fig, ax = plt.subplots(figsize=(10, 4))
         seen_types = set()
+        y_labels = []
         for idx, row in window_df.iterrows():
+            if row["type"] not in seen_types:
+                label = row["label"]
+            else:
+                label = None
             color = type_colors[row["type"]]
-            label = row["label"] if row["type"] not in seen_types else None
             ax.barh(
                 idx,
                 row["duration"],
@@ -639,11 +645,10 @@ def plot_results(
                 label=label,
             )
             seen_types.add(row["type"])
-        y_labels = [
-            f"{format_month(int(row['month']))[:3]} {row['label']}"
-            for _, row in window_df.iterrows()
-        ]
-        ax.set_yticks(y)
+            y_labels.append(
+                f"{format_month(int(row['month']))[:3]} {row['label']}"
+            )
+        ax.set_yticks(positions)
         ax.set_yticklabels(y_labels)
         ax.set_xlabel("Hour of day")
         ax.set_title("Typical selling windows per month (5th–95th percentile)")
