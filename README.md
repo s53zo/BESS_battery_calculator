@@ -7,7 +7,7 @@ Simulate how a battery energy storage system (BESS) can soak up PV exports and s
 - `pandas` and `matplotlib` (install with `pip install pandas matplotlib`)
 
 ## Data
-- PV production samples for 2023–2025 are already included in the repository (files starting with `4-260390-15minMeritve`).
+- PV production samples for 2023–2025 are already included in the repository (`pv_measurements_2023.csv`, `pv_measurements_2024.csv`, `pv_measurements_2025.csv`).
 - Day-ahead price data for 2025 is provided in `energy-charts_Electricity_production_and_spot_prices_in_Slovenia_in_2025.csv`.
 
 If you use different files, pass their paths via the `--pv-files` and `--price-file` arguments.

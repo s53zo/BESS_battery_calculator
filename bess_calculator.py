@@ -764,9 +764,9 @@ def main():
         "--pv-files",
         nargs="+",
         default=[
-            "4-260390-15minMeritve2023-01-01-2023-12-31.csv",
-            "4-260390-15minMeritve2024-01-01-2024-12-31.csv",
-            "4-260390-15minMeritve2025-01-01-2025-11-17.csv",
+            "pv_measurements_2023.csv",
+            "pv_measurements_2024.csv",
+            "pv_measurements_2025.csv",
         ],
         help="Paths to the PV production CSV files",
     )
